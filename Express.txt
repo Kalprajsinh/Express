@@ -1,0 +1,369 @@
+npm init -yes
+npm i express
+--------------------------------------------------------
+make file index.js
+--------------------------------------------------------
+const express = require('express');
+
+const app = express();
+
+app.get("/",function(req,res){
+    res.send("Hello World");
+})
+
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/`);
+});
+-----------------------------------------------------------
+
+how to connect html file with js
+
+const path = require('path');
+
+app.get("/",function(req,res){
+    res.sendFile(path.join(__dirname,'index.html'))
+    
+})
+
+-----------------------------------------------------------
+
+for use folder
+
+app.use(express.static(path.join(__dirname,'public')))
+
+app.get("/",function(req,res){
+    res.sendFile('index.html')
+    
+})
+
+------------------------------------------------------------
+
+parameter in Url
+
+app.get("/hello/:name" , (req,res) => {
+    res.send("Hello " + req.params.name)
+})
+
+------------------------------------------------------------
+
+different routes folder
+------------------------
+index.js :-
+-----------
+const express = require('express');
+const router = express.Router();
+
+const path = require('path');
+
+const app = express();
+
+app.use("/" , require(path.join(__dirname,"router/router_file")))
+
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/`);
+});
+
+----------------------
+|-index.js
+|-routes
+    |-router_file.js
+|-public
+    |-index.html
+------------------------
+
+data.js :-
+----------
+const express = require('express');
+const path = require('path');
+
+const router = express.Router()
+
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'))
+})
+
+router.get("/hello",function(req,res){
+    res.send("Hello World");
+})
+
+module.exports = router
+
+------------------------------------------------------
+
+get,post,put,delete
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+
+const app = express();
+
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // Added to parse JSON bodies
+
+mongoose.connect('mongodb://localhost:27017/local', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to Database"))
+  .catch((error) => console.log("Error in Connecting to Database:", error));
+
+// Define a Mongoose schema and model
+const itemSchema = new mongoose.Schema({
+  name: String,
+  value: Number
+});
+
+const Item = mongoose.model("Item", itemSchema);
+
+// GET: Display all data in the database
+app.get("/", async (req, res) => {
+  try {
+    const items = await Item.find();
+    res.json(items);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// POST: Save data in the database
+app.post("/", async (req, res) => {
+  const newItem = new Item({
+    name: req.body.name,
+    value: req.body.value
+  });
+  
+  try {
+    const savedItem = await newItem.save();
+    res.status(201).json(savedItem);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// PUT: Update data in the database
+app.put("/:id", async (req, res) => {
+  try {
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id, 
+      { name: req.body.name, value: req.body.value }, 
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedItem) {
+      return res.status(404).send("Item not found");
+    }
+
+    res.json(updatedItem);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// DELETE: Remove data in the database
+app.delete("/:id", async (req, res) => {
+  try {
+    const deletedItem = await Item.findByIdAndDelete(req.params.id);
+
+    if (!deletedItem) {
+      return res.status(404).send("Item not found");
+    }
+
+    res.json(deletedItem);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/`);
+});
+
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+
+simple concept of Middleware :-
+created two middleware functions :- `checkusername` and `checkpassword`
+
+const express = require('express');
+
+const app = express();
+
+app.use(express.json());
+
+function checkusername(req,res,next){
+
+    if(req.body.username === "kalp")
+    {
+        next();
+    }
+    else
+    {
+        res.send("Invalid username");
+    }
+}
+
+function checkpassword(req,res,next){
+
+    if(req.body.password === "1234")
+    {
+        next();
+    }
+    else
+    {
+        res.send("Invalid password");
+    }
+}
+
+app.get("/user",checkusername,checkpassword,function(req,res){
+    res.send("Welcome");
+})
+
+app.post("/user",checkusername,function(req,res){
+    res.send("usre in data base");
+})
+app.listen(3000);
+
+--------------------------------------------------
+Whenever a GET request is made to the root route, the count middleware will execute first, incrementing the countnum variable and logging its value to the console. Then, it calls next() to proceed to the route handler.
+
+Your setup looks correct! This middleware will count the number of times the root route is accessed.
+
+let countnum = 0;
+function count(req,res,next)
+{
+    countnum++;
+    console.log(countnum)
+    next()
+}
+
+app.get("/",count,function(req,res){
+    res.send("Hello");
+})
+
+------------------------------------------------
+
+app.use(count); // all time call this function
+
+app.get("/",function(req,res){})
+app.get("/user",function(req,res){})
+app.post("/",function(req,res){})
+
+-------------------------------------------------
+
+app.use(express.json());
+
+In Express.js, app.use(express.json()) is middleware that parses incoming request bodies with JSON payloads. When a client sends a request with a JSON payload (typically in the request body), this middleware intercepts the request before it reaches your route handlers and parses the JSON payload into a JavaScript object, making it accessible via req.body in your route handlers.
+
+--------------------------------------------------
+
+<form action="http://localhost:3000/user" method="post">
+        <input type="text" name="name" placeholder="name">
+        <input type="text" name="email" placeholder="email">
+        <button type="submit">submit</button>
+</form>
+
+// Middleware to parse URL-encoded bodies
+app.use(express.urlencoded({ extended: true }));
+
+app.post("/user",function(req,res){
+    res.send(req.body);
+})
+
+=================================================================
+global catches :- error handling
+ 
+app.post("/user",function(req,res){
+    res.send(req.body);
+    zsdxfcgvh
+})
+
+// Define the error handling middleware
+app.use((err, req, res, next) => {
+    console.log(err + " Something is wrong in server !!");
+});
+
+output :- ReferenceError: zsdxfcgvh is not defined Something is wrong in server !!
+ 
+=================================================================
+
+Zod : 
+
+C:\Users\91878\OneDrive\Desktop\Notes\0-100\.0000000_____get_post_put_delete\zod
+==============
+
+const express = require('express');
+
+const zod = require('zod')
+
+const app = express();
+
+app.use(express.json());
+
+const myinput = zod.array(zod.string())
+// ["str1" , "str2"]
+
+const myinput2 = zod.object({
+    name: zod.string(),
+    email: zod.string().email(),
+    country: zod.literal("India").or(zod.literal("USA")),
+    age: zod.number()
+});s
+
+app.get("/",function(req,res){
+    const input = req.body;
+    const result = myinput.safeParse(input);
+
+    if(result.success) // thisw return true/false
+    {
+        res.send(result.data);
+    }
+    else
+    {
+        res.send(result.error.issues.map(issue => issue.message)); 
+    }
+})
+
+app.listen(3000);
+---------------------------
+outputs :-
+["as" , "qw"]
+{
+  "success": true,
+  "data": [
+    "as",
+    "qw"
+  ]
+}
+
+[1,2]
+{
+  "success": false,
+  "error": {
+    "issues": [
+      {
+        "code": "invalid_type",
+        "expected": "string",
+        "received": "number",
+        "path": [
+          0
+        ],
+        "message": "Expected string, received number"
+      },
+      {
+        "code": "invalid_type",
+        "expected": "string",
+        "received": "number",
+        "path": [
+          1
+        ],
+        "message": "Expected string, received number"
+      }
+    ],
+    "name": "ZodError"
+  }
+}
+-----------------------------------------------------------
