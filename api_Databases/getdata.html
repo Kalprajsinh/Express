@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="getdata()">getdata</button>
+    <script>
+        async function getdata() 
+        {
+           const responce = await fetch("https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m");
+           const finaldata = await responce.json();
+           console.log(finaldata.current.temperature_2m + " and " + finaldata.current.wind_speed_10m);
+        }
+    </script>
+</body>
+</html>
