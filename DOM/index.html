@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light Bulb Control</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: black;
+            transition: background-color 0.5s;
+        }
+        #bulb {
+            width: 100px;
+            height: 100px;
+        }
+        #controlButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <img id="bulb" src="off.png" alt="Light Bulb">
+    <br>
+    <button id="controlButton">ON/OFF</button>
+
+    <script>
+        var bulb = document.getElementById('bulb');
+        var button = document.getElementById('controlButton');
+        var isOn = false;
+        var isBroken = false;
+
+        button.addEventListener('click', function() {
+            if (isBroken){
+                alert('The bulb is broken. Please click on bulb');
+                return;
+            };
+            if (isOn) {
+                bulb.src = 'off.png';
+                document.body.style.backgroundColor = 'black';
+            } else {
+                bulb.src = 'on.png';
+                document.body.style.backgroundColor = 'white';
+            }
+            isOn = !isOn;
+        });
+
+        bulb.addEventListener('click', function() {
+            if (isBroken) {
+                // "Fix" the bulb by turning it off
+                bulb.src = 'off.png';
+                document.body.style.backgroundColor = 'black';
+                isOn = false;
+                isBroken = false;
+            } else {
+                // Break the bulb
+                bulb.src = 'break.png';
+                // bulb.style.height = '100px';
+                isBroken = true;
+                document.body.style.backgroundColor = 'black';
+                // bulb.style.transform = 'rotate(90deg)';
+            }
+        });
+    </script>
+
+</body>
+</html>
