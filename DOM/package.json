@@ -1,0 +1,16 @@
+{
+  "name": "dom",
+  "version": "1.0.0",
+  "description": "- A programming interface for web documents.\r - DOM is not a programming language.\r - Represents the page so that programs can change the document structure, style, and content.\r - The DOM is a tree-like representation of the web page that gets loaded into the browser.\r - The DOM represents the document as nodes and objects.\r - Without it, the JavaScript language wouldn't have any model or notion of web pages, HTML documents, SVG documents, and their component parts.\r - Web API used to build websites",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}

@@ -27,6 +27,44 @@
     <br>
     <button id="controlButton">ON/OFF</button>
 
+    <br><br><br><br><br><br><br>
+
+        <input id="firstNumber" type="text" oninput="debouncepopulate()"
+        placeholder="First number"></input> <br></br>
+        <input id="secondNumber" type="text" oninput="debouncepopulate()"
+        placeholder="Second number"></input> <br></br>
+        <!-- <button onclick="populateDiv()">Calculate sum</button> <br></br> -->
+        <div id="finalSum"></div>
+
+    <script>
+        let time ;
+        function debouncepopulate(){
+            clearTimeout(time)
+            time = setTimeout(function(){
+                populateDiv()
+            },1000);
+        }
+        function populateDiv() {
+            const a = document.getElementById("firstNumber").value;
+            const b = document.getElementById("secondNumber").value;
+            const element = document.getElementById("finalSum");
+
+            fetch("http://192.168.2.109:3000/sum/" + a + "/" + b)
+                .then(function(response) {
+                    return response.text();
+                })
+                .then(function(ans) {
+                    element.innerHTML = ans;
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                    element.innerHTML = "Error fetching the sum.";
+                });
+        }
+        // string number
+        // "1111"
+    </script>
+
     <script>
         var bulb = document.getElementById('bulb');
         var button = document.getElementById('controlButton');
