@@ -1,0 +1,69 @@
+#root {
+  margin: 0 auto;
+  text-align: center;
+}
+
+input{
+  width: 400px;
+  height: 40px;
+  font-size: large;
+}
+
+.todoform {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.todoform h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.todoform form {
+  margin-bottom: 20px;
+}
+
+.todoform input[type="text"] {
+  width: calc(100% - 40px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.todoform button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.todoform button:hover {
+  background-color: #0056b3;
+}
+
+.todoform ul {
+  list-style: none;
+  padding: 0;
+}
+
+.todoform ul li {
+  margin-bottom: 10px;
+  color: black;
+}
+
+
+.todoform ul div {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
