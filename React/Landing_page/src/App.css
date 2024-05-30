@@ -81,3 +81,8 @@ img{
 .shoes{
     width: 50%;
 }
+
+canvas{
+    height: 100vh !important;
+    
+}
