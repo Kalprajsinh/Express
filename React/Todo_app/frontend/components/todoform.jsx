@@ -71,7 +71,7 @@ function Todoform(){
             <div>
                 <ul>
                     {todos.map(todo => (
-                        <div style={{color:"black"}}>
+                        <div key={todo._id}  style={{color:"black"}}>
                             {todo.title}
                             <li>{todo.description}</li>
                             <button onClick={() => completedtask(todo._id,todo.completed)}> {todo.completed ? "completed" : "not completed"}</button>
