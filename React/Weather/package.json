@@ -1,0 +1,19 @@
+{
+  "name": "menu-mern",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"", 
+    "2start": "concurrently \"npm run server\" \"npm run client\"",
+    "2server": "npm run dev --prefix server",
+    "2client": "wait-on http://localhost:3000 && npm run dev --prefix client",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
