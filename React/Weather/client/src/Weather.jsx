@@ -35,6 +35,7 @@ const Weather = () => {
 
     return (
         <div className="w-full h-screen bg-[url('https://images.unsplash.com/photo-1544274411-a7afe6230711?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover overflow-hidden">
+        <div className="w-full h-full bg-black bg-opacity-35">
             <h1 className=' text-white text-4xl w-auto font-bold p-10 px-14'>Weather App</h1>
 
             <div className='flex w-full h-full'>
@@ -63,7 +64,7 @@ const Weather = () => {
                         )}
                     </p>
                 </div>
-                <div className=' text-white w-1/2'>
+                <div className=' text-white w-1/2 bg-black bg-opacity-45'>
                  {weatherData && (
                     <>
                         <div className='w-full h-20 flex font-semibold place-items-center text-xl'>
@@ -130,6 +131,7 @@ const Weather = () => {
                 )}
                 </div>
             </div>
+        </div>
         </div>
     );
 };
