@@ -1,0 +1,10 @@
+npm init -yes
+npm i -g typescript
+npx tsc --init
+
+Step 3 - Create a a.ts file
+const x: number = 1;
+console.log(x);
+
+Step 4 - Compile the ts file to js file
+tsc -b
