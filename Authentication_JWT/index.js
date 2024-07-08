@@ -2,26 +2,28 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 const jwtPassword = "123456";
 
-// 'mongodb://localhost:27017/admin'
+// '' mongodb+srv://kalpraj51:dYt7CIyDXwi6gZbL@cluster0.qfsnyra.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
-mongoose.connect('mongodb+srv://kalpraj51:dYt7CIyDXwi6gZbL@cluster0.qfsnyra.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Connected to Database"))
-  .catch((error) => console.log("Error in Connecting to Database:", error));
+mongoose.connect('mongodb://localhost:27017/admin', { useNewUrlParser: true, useUnifiedTopology: true })
+.then(() => console.log("Connected to Database"))
+.catch((error) => console.log("Error in Connecting to Database:", error));
 
 const User = mongoose.model("user", {
-    name: String,
-    username: String,
-    password: String,
+  name: String,
+  username: String,
+  password: String,
 });
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.post("/", async function(req, res) {
-    try {
+  try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const newuser = new User({

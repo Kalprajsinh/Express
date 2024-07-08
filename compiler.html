@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode Clone Problem Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .problem-description {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .code-editor {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f4f4f4;
+        }
+        .compiler-container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>LeetCode Clone</h1>
+
+        <div class="problem-description">
+            <h2>Problem: Two Sum</h2>
+            <p>Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.</p>
+            <p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
+            <p>You can return the answer in any order.</p>
+            <h3>Example:</h3>
+            <pre><code>Input: nums = [2, 7, 11, 15], target = 9
+Output: [0, 1]
+Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].</code></pre>
+        </div>
+
+        <div class="code-editor">
+            <h3>Code Editor</h3>
+            <textarea id="code" rows="10" style="width: 100%;"># Write your code here</textarea>
+            <br><br>
+            <label for="language">Choose a language:</label>
+            <select id="language">
+                <option value="python3">Python</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="c">C</option>
+                <!-- Add more languages as needed -->
+            </select>
+            <br><br>
+            <button onclick="executeCode()">Run Code</button>
+        </div>
+
+        <div class="compiler-container">
+            <h3>Output</h3>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        function executeCode() {
+            const code = document.getElementById('code').value;
+            const language = document.getElementById('language').value;
+            const compilerURL = `https://www.jdoodle.com/assets/jdoodle-pym.min.js`;
+            const form = document.createElement('form');
+            form.setAttribute('method', 'POST');
+            form.setAttribute('action', compilerURL);
+            form.setAttribute('target', '_blank');
+
+            const codeField = document.createElement('input');
+            codeField.setAttribute('type', 'hidden');
+            codeField.setAttribute('name', 'code');
+            codeField.setAttribute('value', code);
+            form.appendChild(codeField);
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    </script>
+</body>
+
+</html>
