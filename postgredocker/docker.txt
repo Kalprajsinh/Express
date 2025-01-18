@@ -1,0 +1,26 @@
+docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+docker exec -it my-postgres1 psql -U postgres -d postgres
+
+
+connection string 
+postgresql://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable
+
+
+node js typescript 
+------------------
+
+npm init -yes
+npm install express
+npm install pg
+npm install @types/pg
+npx tsc --init
+
+"rootDir": "./src",
+"outDir": "./dist",      
+
+mkdir src -> index.ts
+
+tsc -b
+node ./dist/file.js
+
+npx ts-node script.ts

@@ -12,7 +12,6 @@ function Navebar(){
         <li href="#">About</li>
         <li href="#">contact</li>
       </ui>
-
       <button className='btn'>Login</button>
      </nav>
     )

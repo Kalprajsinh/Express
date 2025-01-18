@@ -23,9 +23,9 @@ function Hero()
             </div>
             </div>
             {/* <img className="shoes" src="../public/shoes2.png" alt="" /> */}
-            <Canvas>
+            <Canvas style={{ marginTop:200}}>
               <ambientLight intensity={2}/>
-              <OrbitControls enableZoom = {false}/>
+              <OrbitControls enableZoom = {true}/>
               <Suspense fallback={null}>
                 <Shoes/>
               </Suspense>
