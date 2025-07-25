@@ -1,5 +1,6 @@
 const express = require("express")
-const crypto = require("crypto")
+const crypto = require("crypto");
+const axios = require("axios");
 
 
 const app = express();
@@ -31,6 +32,30 @@ app.get("/hello", validkey , function(req,res){
         age: 20
     })
 })
+
+app.get("/data", async function(req, res) {
+  try {
+    const response = await fetch("https://colormagic.app/api/palette/search?q=person");
+    const data = await response.json();
+    console.log(data);
+    res.send(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/data2", async function(req, res) {
+    try {
+      const response = await axios.get("https://colormagic.app/api/palette/search?q=person");
+      const data = response.data;
+      console.log(data);
+      res.send(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
 
 app.listen(3000, () => {
     console.log("Server is running on port 3000");

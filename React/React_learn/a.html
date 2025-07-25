@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All-in-One Chart Examples</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .chart-container {
+      margin: 20px auto;
+      width: 80%;
+    }
+    .chart {
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h1>All-in-One Chart Examples</h1>
+
+  <div class="chart">
+    <div class="chart">
+      <h2>Waterfall Chart</h2>
+      <div id="chart-container"></div>
+    </div>
+    <div class="chart">
+      <h2>Bar Chart</h2>
+      <div id="bar-chart"></div>
+    </div>
+    
+    <div class="chart">
+      <h2>Line Chart</h2>
+      <div id="line-chart"></div>
+    </div>
+    
+    <div class="chart">
+      <h2>Pie Chart</h2>
+      <div id="pie-chart"></div>
+    </div>
+    
+    <div class="chart">
+      <h2>Scatter Plot</h2>
+      <div id="scatter-plot"></div>
+    </div>
+  </div>
+
+  <script>
+    function generateWaterfallChart({
+  data = [],
+  height = 300,
+  width = 600,
+  positiveColor = "#10b981",
+  negativeColor = "#ef4444",
+  totalColor = "#3b82f6",
+  animate = true,
+}) {
+  if (!Array.isArray(data) || data.length === 0) return '';
+
+  const padding = 60;
+  const chartWidth = width - padding * 2;
+  const chartHeight = height - padding * 2;
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("width", width.toString());
+  svg.setAttribute("height", height.toString());
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+  // Calculate running totals and find max/min values
+  let runningTotal = 0;
+  const totals = [];
+  const values = [];
+
+  data.forEach((item) => {
+    values.push(item.value);
+    runningTotal += item.value;
+    totals.push(runningTotal);
+  });
+
+  const maxValue = Math.max(...totals, ...values, 0);
+  const minValue = Math.min(...totals, ...values, 0);
+  const valueRange = maxValue - minValue;
+
+  // Create background grid
+  for (let i = 0; i <= 5; i++) {
+    const value = minValue + (valueRange * i) / 5;
+    const y = padding + chartHeight - ((value - minValue) / valueRange) * chartHeight;
+
+    const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    gridLine.setAttribute("x1", padding.toString());
+    gridLine.setAttribute("y1", y.toString());
+    gridLine.setAttribute("x2", (width - padding).toString());
+    gridLine.setAttribute("y2", y.toString());
+    gridLine.setAttribute("stroke", "#e5e7eb");
+    gridLine.setAttribute("stroke-width", "1");
+    svg.appendChild(gridLine);
+
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", (padding - 10).toString());
+    label.setAttribute("y", y.toString());
+    label.setAttribute("text-anchor", "end");
+    label.setAttribute("dominant-baseline", "middle");
+    label.setAttribute("font-size", "10");
+    label.setAttribute("fill", "#6b7280");
+    label.textContent = value.toFixed(0);
+    svg.appendChild(label);
+  }
+
+  // Create zero line if needed
+  if (minValue < 0 && maxValue > 0) {
+    const zeroY = padding + chartHeight - ((0 - minValue) / valueRange) * chartHeight;
+
+    const zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    zeroLine.setAttribute("x1", padding.toString());
+    zeroLine.setAttribute("y1", zeroY.toString());
+    zeroLine.setAttribute("x2", (width - padding).toString());
+    zeroLine.setAttribute("y2", zeroY.toString());
+    zeroLine.setAttribute("stroke", "#6b7280");
+    zeroLine.setAttribute("stroke-width", "1");
+    zeroLine.setAttribute("stroke-dasharray", "4");
+    svg.appendChild(zeroLine);
+  }
+
+  // Calculate bar width
+  const barWidth = chartWidth / data.length - 10;
+
+  // Create bars and connecting lines
+  let prevEndY = padding + chartHeight - ((0 - minValue) / valueRange) * chartHeight;
+
+  data.forEach((item, index) => {
+    const x = padding + index * (chartWidth / data.length) + 5;
+    const isTotal = index === data.length - 1 && item.label.toLowerCase().includes("total");
+
+    // Calculate bar position
+    let startY, endY;
+
+    if (isTotal) {
+      // Total bar starts from zero
+      startY = padding + chartHeight - ((0 - minValue) / valueRange) * chartHeight;
+      endY = padding + chartHeight - ((totals[index] - minValue) / valueRange) * chartHeight;
+    } else {
+      // Regular bars
+      const prevTotal = index === 0 ? 0 : totals[index - 1];
+      startY = padding + chartHeight - ((prevTotal - minValue) / valueRange) * chartHeight;
+      endY = padding + chartHeight - ((totals[index] - minValue) / valueRange) * chartHeight;
+    }
+
+    // Create connecting line from previous bar
+    if (!isTotal && index > 0) {
+      const connector = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      connector.setAttribute("x1", (x - 5).toString());
+      connector.setAttribute("y1", prevEndY.toString());
+      connector.setAttribute("x2", x.toString());
+      connector.setAttribute("y2", startY.toString());
+      connector.setAttribute("stroke", "#6b7280");
+      connector.setAttribute("stroke-width", "1");
+      connector.setAttribute("stroke-dasharray", "3");
+      svg.appendChild(connector);
+    }
+
+    // Create bar
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", x.toString());
+    rect.setAttribute("width", barWidth.toString());
+
+    // Set bar color based on value
+    let barColor;
+    if (isTotal) {
+      barColor = totalColor;
+    } else if (item.value >= 0) {
+      barColor = positiveColor;
+    } else {
+      barColor = negativeColor;
+    }
+
+    rect.setAttribute("fill", barColor);
+
+    // Set bar position and size
+    if (item.value >= 0) {
+      rect.setAttribute("y", animate ? startY.toString() : endY.toString());
+      rect.setAttribute("height", animate ? "0" : (startY - endY).toString());
+    } else {
+      rect.setAttribute("y", animate ? startY.toString() : startY.toString());
+      rect.setAttribute("height", animate ? "0" : (endY - startY).toString());
+    }
+
+    // Animation
+    if (animate) {
+      setTimeout(() => {
+        if (item.value >= 0) {
+          rect.setAttribute("y", endY.toString());
+          rect.setAttribute("height", (startY - endY).toString());
+        } else {
+          rect.setAttribute("height", (endY - startY).toString());
+        }
+        rect.setAttribute("transition", "y 0.5s ease, height 0.5s ease");
+      }, index * 100);
+    }
+
+    prevEndY = endY;
+
+    svg.appendChild(rect);
+
+    // Add label
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", (x + barWidth / 2).toString());
+    label.setAttribute("y", (height - padding + 15).toString());
+    label.setAttribute("text-anchor", "middle");
+    label.setAttribute("font-size", "10");
+    label.setAttribute("fill", "#6b7280");
+    label.textContent = item.label;
+    svg.appendChild(label);
+
+    // Add value label
+    const valueLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    valueLabel.setAttribute("x", (x + barWidth / 2).toString());
+    valueLabel.setAttribute("y", ((startY + endY) / 2).toString());
+    valueLabel.setAttribute("text-anchor", "middle");
+    valueLabel.setAttribute("dominant-baseline", "middle");
+    valueLabel.setAttribute("font-size", "10");
+    valueLabel.setAttribute("fill", "white");
+    valueLabel.textContent = item.value.toString();
+    svg.appendChild(valueLabel);
+  });
+
+  return svg;
+}
+
+    const data = [
+      { label: "Start", value: 100 },
+      { label: "Step 1", value: 23 },
+      { label: "Step 2", value: -38 },
+      { label: "Step 3", value: -24 },
+      { label: "Step 3", value: 12 },
+      { label: "Step 3", value: -48 },
+      { label: "Step 3", value: 15 },
+      { label: "Step 3", value: -32 },
+      { label: "Step 3", value: -128 },
+      { label: "Step 3", value: 12 },
+      { label: "Step 3", value: 42 },
+      { label: "Step 3", value: 134 },
+      { label: "Total", value: 68 }
+    ];
+
+    // Generate the SVG for the waterfall chart
+    const svg = generateWaterfallChart({
+      data: data,
+      width: 800,
+      height: 400,
+      positiveColor: "#10B981", // Color for positive changes (green)
+      negativeColor: "#EF4444", // Color for negative changes (red)
+      totalColor: "#3B82F6",    // Color for total (blue)
+      animate: true,
+    });
+
+    // Append the generated SVG into the chart-container div
+    document.getElementById('chart-container').appendChild(svg);
+
+
+    // Bar Chart
+    function generateBarChartSVG({
+      data = [],
+      height = 300,
+      width = 600,
+      barColor = "#3b82f6",
+      hoverColor = "#2563eb",
+      animate = true,
+    }) {
+      if (!Array.isArray(data) || data.length === 0) return '';
+
+      const maxValue = Math.max(...data, 0);
+      const padding = 40;
+      const chartWidth = width - padding * 2;
+      const chartHeight = height - padding * 2;
+      const barWidth = chartWidth / data.length - 10;
+
+      let svgContent = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+
+      // Create background grid (lines and labels)
+      for (let i = 0; i <= 5; i++) {
+        const y = padding + chartHeight - (i * chartHeight) / 5;
+        svgContent += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" stroke="#e5e7eb" stroke-width="1" />`;
+        svgContent += `<text x="${padding - 5}" y="${y}" text-anchor="end" dominant-baseline="middle" font-size="12" fill="#6b7280">${Math.round((maxValue * i) / 5)}</text>`;
+      }
+
+      // Create bars and their labels
+      data.forEach((value, index) => {
+        const barHeight = (value / maxValue) * chartHeight;
+        const x = padding + index * (chartWidth / data.length) + 5;
+        const y = height - padding - barHeight;
+
+        // Bars
+        svgContent += `<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${barColor}" rx="4" />`;
+
+        // Add value label on top of the bar
+        svgContent += `<text x="${x + barWidth / 2}" y="${y - 10}" text-anchor="middle" font-size="12" fill="#6b7280">${value}</text>`;
+      });
+
+      svgContent += `</svg>`;
+
+      return svgContent;
+    }
+
+    // Line Chart
+    function generateLineChartSVG({ data = [], height = 300, width = 600, lineColor = "#3b82f6", pointColor = "#2563eb" }) {
+      if (!Array.isArray(data) || data.length === 0) return '';
+  
+      const maxValue = Math.max(...data, 0);
+      const minValue = Math.min(...data, 0);
+      const padding = 40;
+      const chartWidth = width - padding * 2;
+      const chartHeight = height - padding * 2;
+  
+      let svgContent = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+  
+      // Create background grid (lines)
+      for (let i = 0; i <= 5; i++) {
+        const y = padding + chartHeight - (i * chartHeight) / 5;
+        svgContent += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" stroke="#e5e7eb" stroke-width="1" />`;
+        svgContent += `<text x="${padding - 5}" y="${y}" text-anchor="end" dominant-baseline="middle" font-size="12" fill="#6b7280">${Math.round((maxValue * i) / 5)}</text>`;
+      }
+  
+      // Create the line path
+      let pathData = "M " + data.map((value, index) => {
+        const x = padding + index * (chartWidth / (data.length - 1));
+        const y = height - padding - ((value - minValue) / (maxValue - minValue)) * chartHeight;
+        return `${x},${y}`;
+      }).join(" L ");
+  
+      svgContent += `<path d="${pathData}" fill="transparent" stroke="${lineColor}" stroke-width="2" />`;
+  
+      // Add data points
+      data.forEach((value, index) => {
+        const x = padding + index * (chartWidth / (data.length - 1));
+        const y = height - padding - ((value - minValue) / (maxValue - minValue)) * chartHeight;
+        svgContent += `<circle cx="${x}" cy="${y}" r="5" fill="${pointColor}" />`;
+      });
+  
+      svgContent += `</svg>`;
+  
+      return svgContent;
+    }
+
+    // Pie Chart
+    function generatePieChartSVG({ data = [], width = 300, height = 300, colors = ["#3b82f6", "#2563eb", "#f97316", "#10b981", "#8b5cf6"] }) {
+      const total = data.reduce((sum, value) => sum + value, 0);
+      let angle = 0;
+      const radius = Math.min(width, height) / 2;
+      const centerX = width / 2;
+      const centerY = height / 2;
+  
+      let svgContent = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+  
+      // Draw each slice of the pie chart
+      data.forEach((value, index) => {
+        const sliceAngle = (value / total) * 360;
+        const startAngle = angle;
+        const endAngle = angle + sliceAngle;
+        angle += sliceAngle;
+  
+        // Calculate the path for the slice
+        const x1 = centerX + radius * Math.cos((Math.PI / 180) * startAngle);
+        const y1 = centerY + radius * Math.sin((Math.PI / 180) * startAngle);
+        const x2 = centerX + radius * Math.cos((Math.PI / 180) * endAngle);
+        const y2 = centerY + radius * Math.sin((Math.PI / 180) * endAngle);
+  
+        const largeArcFlag = sliceAngle > 180 ? 1 : 0;
+        const path = `M ${centerX},${centerY} L ${x1},${y1} A ${radius},${radius} 0 ${largeArcFlag} 1 ${x2},${y2} Z`;
+  
+        svgContent += `<path d="${path}" fill="${colors[index % colors.length]}" />`;
+      });
+  
+      svgContent += `</svg>`;
+  
+      return svgContent;
+    }
+
+    // Scatter Plot
+    function generateScatterPlotSVG({ data = [], height = 300, width = 600, pointColor = "#2563eb" }) {
+      if (!Array.isArray(data) || data.length === 0) return '';
+  
+      const maxX = Math.max(...data.map(point => point[0]));
+      const maxY = Math.max(...data.map(point => point[1]));
+      const minX = Math.min(...data.map(point => point[0]));
+      const minY = Math.min(...data.map(point => point[1]));
+  
+      const padding = 40;
+      const chartWidth = width - padding * 2;
+      const chartHeight = height - padding * 2;
+  
+      let svgContent = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+  
+      // Create background grid (optional)
+      for (let i = 0; i <= 5; i++) {
+        const x = padding + (i * chartWidth) / 5;
+        const y = padding + (i * chartHeight) / 5;
+        svgContent += `<line x1="${x}" y1="${padding}" x2="${x}" y2="${height - padding}" stroke="#e5e7eb" stroke-width="1" />`;
+        svgContent += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" stroke="#e5e7eb" stroke-width="1" />`;
+      }
+  
+      // Plot points
+      data.forEach(([xValue, yValue]) => {
+        const x = padding + ((xValue - minX) / (maxX - minX)) * chartWidth;
+        const y = height - padding - ((yValue - minY) / (maxY - minY)) * chartHeight;
+        svgContent += `<circle cx="${x}" cy="${y}" r="5" fill="${pointColor}" />`;
+      });
+  
+      svgContent += `</svg>`;
+  
+      return svgContent;
+    }
+
+    // Example data for all charts
+    const barData = [10, 20, 30, 25, 40, 35, 50];
+    const lineData = [10, 20, 30, 25, 40, 35, 50];
+    const pieData = [10, 30, 50, 60, 40];
+    const scatterData = [
+      [10, 20],
+      [30, 40],
+      [50, 70],
+      [60, 80],
+      [90, 100],
+    ];
+    // Generate SVGs and insert into the DOM
+
+    document.getElementById('bar-chart').innerHTML = generateBarChartSVG({ data: barData });
+    document.getElementById('line-chart').innerHTML = generateLineChartSVG({ data: lineData });
+    document.getElementById('pie-chart').innerHTML = generatePieChartSVG({ data: pieData });
+    document.getElementById('scatter-plot').innerHTML = generateScatterPlotSVG({ data: scatterData });
+    
+  </script>
+</body>
+</html>

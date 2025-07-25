@@ -42,7 +42,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.post("/user",function(req,res){
     res.send(req.body);
-    zsdxfcgvh
 })
 
 app.get("/user",checkusername,checkpassword,function(req,res){
@@ -54,5 +53,20 @@ app.use((err, req, res, next) => {
     console.log(err + " Something is wrong in server !!");
 });
 
+let data = "";
+
+function middle(req,res,next){
+    const perams = req.query;
+    data += "in side middle";
+    data += String(perams.name);
+    next();
+}
+
+app.get("/Hello" ,middle, (req,res) => {
+    data += "\n after middle"
+    res.send(data);
+})
+
+// http://localhost:3000/Hello?name=Kalpraj
 
 app.listen(3000);

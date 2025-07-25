@@ -1,0 +1,35 @@
+Example of Local Storage:
+javascript
+Copy
+// Save data to localStorage
+localStorage.setItem("username", "JohnDoe");
+
+// Retrieve data from localStorage
+let username = localStorage.getItem("username");
+console.log(username);  // Output: "JohnDoe"
+
+// Remove data from localStorage
+localStorage.removeItem("username");
+
+// Clear all items from localStorage
+localStorage.clear();
+
+---------------------------------
+
+2. Cookies    - Cookies are small text files that websites store on **your device** to remember information about your visit
+Definition: Cookies are small pieces of data sent to and from the server. They are typically used for tracking, session management, and personalization. Cookies have expiration dates and are sent to the server with each HTTP request.
+
+// Set cookies
+        try {
+            res.cookie('accessToken', accessToken, { httpOnly: true, secure: isProduction, sameSite: 'None' });
+            res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: isProduction, sameSite: 'None' });
+            console.log("cookie send")     
+        } catch (error) {
+            if (err) return res.sendStatus(203).send("error in sent Token try again")
+        }
+        res.status(200).send("Login successful");
+
+// log Output
+res.clearCookie('accessToken', { httpOnly: true, secure: true, sameSite: 'Strict' });
+res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'Strict' });
+res.status(200).send("Logged out successfully");

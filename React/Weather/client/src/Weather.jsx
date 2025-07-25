@@ -111,7 +111,7 @@ const Weather = () => {
                                 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Heat Index: {weatherData.current.heatindex_c}°C / {weatherData.current.heatindex_f}°F</p>
                             </div>
                             <div className='flex items-center'>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<i className='fas fa-dewpoint'></i>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<i className='fas fa-water'></i>
                                 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dew Point: {weatherData.current.dewpoint_c}°C / {weatherData.current.dewpoint_f}°F</p>
                             </div>
                             <div className='flex items-center'>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
+import Testimonial1 from './testimonial1';
 
 function App() {
   const [data, setData] = useState([]);
@@ -33,6 +34,10 @@ function App() {
     }
   }, [clickedAlbum, data]);
 
+  return(
+    <Testimonial1 />
+  )
+
   return (
     <>
       <div className="grid grid-cols-3 md:grid-cols-5 gap-5 m-10">
@@ -53,7 +58,7 @@ function App() {
             {albumImgs.length > 0 ? (
               albumImgs.map((imgItem) => (
                 <div key={imgItem.id} className="bg-black bg-opacity-35 flex flex-col gap-5 rounded-lg">
-                  <img className="rounded-lg" src={imgItem.url} alt="" />
+                  <img className="rounded-lg"  src={`https://picsum.photos/200?random=${imgItem.id || index}`} alt="" />
                 </div>
               ))
             ) : (

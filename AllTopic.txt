@@ -1,0 +1,38 @@
+Html,css,js
+
+map
+filter
+find
+function
+date
+object
+Callbacks
+
+Async
+Await
+Promises
+
+Bash, terminal commend
+Git/Github
+
+middlewares
+Zod
+routers
+Object Relational Mapping (ORM) : easier and more efficient to work with relational databases by abstracting away SQL queries
+
+fetch
+axois
+try catch
+
+Hash password
+encryption
+local storage , Cookie 
+
+Mongodb databases - todo
+JWT - create , decode , verifying
+
+Advance_Authentication project 
+
+React Hook
+
+
